@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#6c5ce7">
+<meta name="description" content="CoC Brain Training — latihan Numerical, RPL, Memory, Public Speaking, Logic, dan Spatial.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>CoC Brain Training — PWA</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">🧠</div><div><b>CoC Brain</b><small>Training Dashboard</small></div></div>
+    <nav>
+      <button data-page="dashboard">🏠 Dashboard</button>
+      <button data-page="training">⚡ Training Lab</button>
+      <button data-page="schedule">🗓️ Jadwal</button>
+      <button data-page="hub">▶ Learning Hub</button>
+      <button data-page="stats">📊 Statistik</button>
+    </nav>
+    <div class="side-bottom">
+      <div class="mini-streak">🔥 <b id="sideStreak">0</b> hari<br><small>streak</small></div>
+      <button class="outline" id="installBtn" hidden>📲 Install App</button>
+      <button class="outline" id="reminderBtn">🔔 Aktifkan Pengingat</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section id="dashboard" class="page active"></section>
+    <section id="training" class="page"></section>
+    <section id="schedule" class="page"></section>
+    <section id="hub" class="page"></section>
+    <section id="stats" class="page"></section>
+  </main>
+</div>
+<div id="toast"></div>
+<script src="questions.js"></script>
+<script src="script.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(console.error));
+}
+let deferredInstallPrompt;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = document.getElementById("installBtn");
+  if (btn) btn.hidden = false;
+});
+window.addEventListener("appinstalled", () => {
+  const btn = document.getElementById("installBtn");
+  if (btn) btn.hidden = true;
+  if (typeof toast === "function") toast("📲 CoC Brain berhasil di-install!");
+});
+document.addEventListener("click", async (e) => {
+  if (e.target && e.target.id === "installBtn" && deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    e.target.hidden = true;
+  }
+});
+</script>
+</body>
+</html>
